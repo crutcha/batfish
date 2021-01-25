@@ -84,6 +84,12 @@ public final class Region implements Serializable {
 
   @Nonnull private final Map<String, CustomerGateway> _customerGateways;
 
+  @Nonnull private final Map<String, DirectConnectGateway> _directConnectGateways;
+
+  @Nonnull private final Map<String, DirectConnectGatewayAttachment> _directConnectGatewayAttachments;
+
+  @Nonnull private final Map<String, DirectConnectGatewayAssociation> _directConnectGatewayAssociations;
+
   @Nonnull private final Map<String, ElasticsearchDomain> _elasticsearchDomains;
 
   @Nonnull private final Map<String, Instance> _instances;
@@ -174,6 +180,9 @@ public final class Region implements Serializable {
         new HashMap<>(),
         new HashMap<>(),
         new HashMap<>(),
+        new HashMap<>(),
+        new HashMap<>(),
+        new HashMap<>(),
         new HashMap<>());
   }
 
@@ -181,6 +190,9 @@ public final class Region implements Serializable {
       String name,
       Map<String, Address> addresses,
       Map<String, CustomerGateway> customerGateways,
+      Map<String, DirectConnectGateway> directConnectGateways,
+      Map<String, DirectConnectGatewayAttachment> directConnectGatewayAttachments,
+      Map<String, DirectConnectGatewayAssociation> directConnectGatewayAssociations,
       Map<String, ElasticsearchDomain> elasticsearchDomains,
       Map<String, Instance> instances,
       Map<String, InternetGateway> internetGateways,
@@ -211,6 +223,9 @@ public final class Region implements Serializable {
     _name = name;
     _addresses = addresses;
     _customerGateways = customerGateways;
+    _directConnectGateways = directConnectGateways;
+    _directConnectGatewayAttachments = directConnectGatewayAttachments;
+    _directConnectGatewayAssociations = directConnectGatewayAssociations;
     _elasticsearchDomains = elasticsearchDomains;
     _instances = instances;
     _internetGateways = internetGateways;
@@ -305,6 +320,7 @@ public final class Region implements Serializable {
    *
    * <p>Returns null for unrecognized keys.
    */
+  // ACTODO: start here
   @Nullable
   private ThrowingConsumer<JsonNode, IOException> getChildConsumer(String elementType) {
     switch (elementType) {
@@ -345,6 +361,21 @@ public final class Region implements Serializable {
           if (elasticsearchDomain.getAvailable() && elasticsearchDomain.getVpcId() != null) {
             _elasticsearchDomains.put(elasticsearchDomain.getId(), elasticsearchDomain);
           }
+        };
+      case AwsVpcEntity.JSON_KEY_DIRECT_CONNECT_GATEWAYS:
+        return json -> {
+          DirectConnectGateway dxg = BatfishObjectMapper.mapper().convertValue(json, DirectConnectGateway.class);
+          _directConnectGateways.put(dxg.getId(), dxg);
+        };
+      case AwsVpcEntity.JSON_KEY_DIRECT_CONNECT_GATEWAY_ATTACHMENTS:
+        return json -> {
+          DirectConnectGatewayAttachment dxgAttachment = BatfishObjectMapper.mapper().convertValue(json, DirectConnectGatewayAttachment.class);
+          _directConnectGatewayAttachments.put(dxgAttachment.getId(), dxgAttachment);
+        };
+    case AwsVpcEntity.JSON_KEY_DIRECT_CONNECT_GATEWAY_ASSOCIATIONS:
+        return json -> {
+          DirectConnectGatewayAssociation dxgAssociation = BatfishObjectMapper.mapper().convertValue(json, DirectConnectGatewayAssociation.class);
+          _directConnectGatewayAssociations.put(dxgAssociation.getId(), dxgAssociation);
         };
       case AwsVpcEntity.JSON_KEY_INTERNET_GATEWAYS:
         return json -> {
@@ -1217,6 +1248,9 @@ public final class Region implements Serializable {
   public static final class RegionBuilder {
     private Map<String, Address> _addresses;
     private Map<String, CustomerGateway> _customerGateways;
+    private Map<String, DirectConnectGateway> _directConnectGateways;
+    private Map<String, DirectConnectGatewayAttachment> _directConnectGatewayAttachments;
+    private Map<String, DirectConnectGatewayAssociation> _directConnectGatewayAssociations;
     private Map<String, ElasticsearchDomain> _elasticsearchDomains;
     private Map<String, Instance> _instances;
     private Map<String, InternetGateway> _internetGateways;
@@ -1257,6 +1291,21 @@ public final class Region implements Serializable {
 
     public RegionBuilder setCustomerGateways(Map<String, CustomerGateway> customerGateways) {
       _customerGateways = customerGateways;
+      return this;
+    }
+
+    public RegionBuilder setDirectConnectGateways(Map<String, DirectConnectGateway> directConnectGateways) {
+      _directConnectGateways = directConnectGateways;
+      return this;
+    }
+
+    public RegionBuilder setDirectConnectGatewayAttachments(Map<String, DirectConnectGatewayAttachment> directConnectGatewayAttachments) {
+      _directConnectGatewayAttachments = directConnectGatewayAttachments;
+      return this;
+    }
+
+    public RegionBuilder setDirectConnectGatewayAssociations(Map<String, DirectConnectGatewayAssociation> directConnectGatewayAssociations) {
+      _directConnectGatewayAssociations = directConnectGatewayAssociations;
       return this;
     }
 
@@ -1415,6 +1464,9 @@ public final class Region implements Serializable {
           _name,
           firstNonNull(_addresses, ImmutableMap.of()),
           firstNonNull(_customerGateways, ImmutableMap.of()),
+          firstNonNull(_directConnectGateways, ImmutableMap.of()),
+          firstNonNull(_directConnectGatewayAttachments, ImmutableMap.of()),
+          firstNonNull(_directConnectGatewayAssociations, ImmutableMap.of()),
           firstNonNull(_elasticsearchDomains, ImmutableMap.of()),
           firstNonNull(_instances, ImmutableMap.of()),
           firstNonNull(_internetGateways, ImmutableMap.of()),
