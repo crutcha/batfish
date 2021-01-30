@@ -33,7 +33,7 @@ public final class NetworkInterface implements AwsVpcEntity, Serializable {
     @Nullable private final String _instanceId;
 
     @JsonCreator
-    private static Attachment createAssociation (
+    private static Attachment create(
         @Nullable @JsonProperty(JSON_KEY_STATUS) String status,
         @Nullable @JsonProperty(JSON_KEY_INSTANCE_ID) String instanceId) {
       checkArgument(status != null, "Attachment status cannot be null for network interface");

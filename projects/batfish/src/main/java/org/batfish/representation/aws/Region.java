@@ -136,6 +136,8 @@ public final class Region implements Serializable {
 
   @Nonnull private final Map<String, TransitGateway> _transitGateways;
 
+  @Nonnull private final Map<String, VirtualInterface> _virtualInterfaces;
+
   @Nonnull private final Map<String, VpcPeeringConnection> _vpcPeerings;
 
   @Nonnull private final Map<String, Vpc> _vpcs;
@@ -152,6 +154,7 @@ public final class Region implements Serializable {
   public Region(String name) {
     this(
         name,
+        new HashMap<>(),
         new HashMap<>(),
         new HashMap<>(),
         new HashMap<>(),
@@ -215,6 +218,7 @@ public final class Region implements Serializable {
       Map<String, TransitGatewayStaticRoutes> transitGatewayStaticRoutes,
       Map<String, TransitGatewayVpcAttachment> transitGatewayVpcAttachments,
       Map<String, TransitGateway> transitGateways,
+      Map<String, VirtualInterface> virtualInterfaces,
       Map<String, VpcEndpoint> vpcEndpoints,
       Map<String, VpcPeeringConnection> vpcPeerings,
       Map<String, Vpc> vpcs,
@@ -248,6 +252,7 @@ public final class Region implements Serializable {
     _transitGatewayStaticRoutes = transitGatewayStaticRoutes;
     _transitGatewayVpcAttachments = transitGatewayVpcAttachments;
     _transitGateways = transitGateways;
+    _virtualInterfaces = virtualInterfaces;
     _vpcEndpoints = vpcEndpoints;
     _vpcPeerings = vpcPeerings;
     _vpcs = vpcs;
@@ -518,6 +523,11 @@ public final class Region implements Serializable {
                 BatfishObjectMapper.mapper().convertValue(json, TransitGateway.class);
             _transitGateways.put(tGateway.getId(), tGateway);
           }
+        };
+      case AwsVpcEntity.JSON_KEY_VIRTUAL_INTERFACES:
+        return json -> {
+          VirtualInterface vif = BatfishObjectMapper.mapper().convertValue(json, VirtualInterface.class);
+          _virtualInterfaces.put(vif.getId(), vif);
         };
       case AwsVpcEntity.JSON_KEY_VPC_ENDPOINTS:
         return json -> {
@@ -1274,6 +1284,7 @@ public final class Region implements Serializable {
     private Map<String, TransitGatewayStaticRoutes> _transitGatewayStaticRoutes;
     private Map<String, TransitGatewayVpcAttachment> _transitGatewayVpcAttachments;
     private Map<String, TransitGateway> _transitGateways;
+    private Map<String, VirtualInterface> _virtualInterfaces;
     private Map<String, VpcEndpoint> _vpcEndpoints;
     private Map<String, VpcPeeringConnection> _vpcPeerings;
     private Map<String, Vpc> _vpcs;
@@ -1433,6 +1444,11 @@ public final class Region implements Serializable {
       return this;
     }
 
+    public RegionBuilder setVirtualInterfaces(Map<String, VirtualInterface> virtualInterfaces) {
+      _virtualInterfaces = virtualInterfaces;
+      return this;
+    }
+
     public RegionBuilder setVpcEndpoints(Map<String, VpcEndpoint> vpcEndpoints) {
       _vpcEndpoints = vpcEndpoints;
       return this;
@@ -1489,6 +1505,7 @@ public final class Region implements Serializable {
           firstNonNull(_transitGatewayStaticRoutes, ImmutableMap.of()),
           firstNonNull(_transitGatewayVpcAttachments, ImmutableMap.of()),
           firstNonNull(_transitGateways, ImmutableMap.of()),
+          firstNonNull(_virtualInterfaces, ImmutableMap.of()),
           firstNonNull(_vpcEndpoints, ImmutableMap.of()),
           firstNonNull(_vpcPeerings, ImmutableMap.of()),
           firstNonNull(_vpcs, ImmutableMap.of()),
