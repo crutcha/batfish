@@ -240,7 +240,11 @@ public class AwsConfiguration extends VendorConfiguration {
       _convertedConfiguration.addNode(generateAwsServicesGateway());
     }
     for (Account account : getAccounts()) {
-      Collection<Region> regions = account.getRegions();
+      // exclude global regions from processing, they will require elements from each region
+      Collection<Region> regions = account.getRegions()
+          .stream()
+          .filter(r -> !r.getName().equals("global"))
+          .collect(Collectors.toList());
       for (Region region : regions) {
         try {
           region.toConfigurationNodes(_convertedConfiguration, getWarnings());
@@ -254,6 +258,11 @@ public class AwsConfiguration extends VendorConfiguration {
         }
       }
     }
+
+    // Direct connect gateways are a global entity but connect to regional resources, so we need to process
+    // them after region objects have been converted here. DXG connections can also span multiple accounts.
+    processDirectConnectGateways();
+
     // Vpc peerings can be both cross-region and cross-account, so we handle them here
     processVpcPeerings();
     // Transit gateways can be cross-account so we handle them here
@@ -267,6 +276,32 @@ public class AwsConfiguration extends VendorConfiguration {
                   "Failed to convert transit gateways %s", Throwables.getStackTraceAsString(e)));
     }
     TransitGatewayPeeringConnector.connect(this, _convertedConfiguration, getWarnings());
+  }
+
+  private void processDirectConnectGateways() {
+    List<DirectConnectGateway> dxgs = getAccounts().stream()
+        .flatMap(a -> a.getRegions().stream())
+        .flatMap(r -> r.getDirectConnectGateways().values().stream())
+        .collect(ImmutableList.toImmutableList());
+
+    for (DirectConnectGateway dxg : dxgs) {
+      List<VirtualInterface> dxVifs = getAccounts().stream()
+          .flatMap(a -> a.getRegions().stream())
+          .flatMap(r -> r.getVirtualInterfaces().values().stream())
+          .filter(v -> v.getDirectConnectGatewayId().equals(dxg.getId()))
+          .collect(ImmutableList.toImmutableList());
+
+      Configuration dxgNode = dxg.toConfigurationNode(_convertedConfiguration, dxVifs, getWarnings());
+      _convertedConfiguration.addNode(dxgNode);
+      /*
+      dxVifInterface = Interface.builder()
+          .setName(dxVif.getConnectionId())
+          .setOwner(dxgNode)
+          setVrf()
+       */
+      System.out.println("ok");
+      System.out.println("sure");
+    }
   }
 
   private void processVpcPeerings() {

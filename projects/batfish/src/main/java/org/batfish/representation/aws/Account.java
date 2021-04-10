@@ -38,6 +38,10 @@ public class Account implements Serializable {
     return _regions.values();
   }
 
+  public Map<String, Region> getRegionMap() {
+    return _regions;
+  }
+
   @Nonnull
   public String getId() {
     return _id;

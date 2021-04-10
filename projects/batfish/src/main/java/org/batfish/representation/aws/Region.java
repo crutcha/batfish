@@ -644,6 +644,11 @@ public final class Region implements Serializable {
   }
 
   @Nonnull
+  Map<String, DirectConnectGateway> getDirectConnectGateways() {
+    return _directConnectGateways;
+  }
+
+  @Nonnull
   Map<String, ElasticsearchDomain> getElasticSearchDomains() {
     return _elasticsearchDomains;
   }
@@ -776,6 +781,11 @@ public final class Region implements Serializable {
   @Nonnull
   Map<String, TransitGateway> getTransitGateways() {
     return _transitGateways;
+  }
+
+  @Nonnull
+  Map<String, VirtualInterface> getVirtualInterfaces() {
+    return _virtualInterfaces;
   }
 
   @Nonnull

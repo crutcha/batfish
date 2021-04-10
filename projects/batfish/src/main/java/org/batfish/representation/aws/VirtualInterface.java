@@ -209,6 +209,18 @@ public class VirtualInterface implements AwsVpcEntity, Serializable {
     return _virtualInterfaceId;
   }
 
+  public String getDirectConnectGatewayId() {
+    return _directConnectGatewayId;
+  }
+
+  public String getConnectId() {
+    return _connectionId;
+  }
+
+  public String getInterfaceAddress() {
+    return _amazonAddress;
+  }
+
   Configuration toConfigurationNode(
       ConvertedConfiguration awsConfiguration, Region region, Warnings warnings) {
     Configuration cfgNode = Utils.newAwsConfiguration(_virtualInterfaceId, "aws");

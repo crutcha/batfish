@@ -3017,7 +3017,8 @@ public final class JuniperConfiguration extends VendorConfiguration {
         .map(this::toVendorIndependentConfiguration)
         .forEach(outputConfigurations::add);
     outputConfigurations.add(toVendorIndependentConfiguration());
-    return outputConfigurations.build();
+    List<Configuration> build = outputConfigurations.build();
+    return build;
   }
 
   /** Creates and returns a vendor-independent configuration for the named logical-system. */

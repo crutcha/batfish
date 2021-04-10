@@ -57,6 +57,7 @@ public interface AwsVpcEntity {
   String JSON_KEY_DESTINATION_CIDR_BLOCK = "DestinationCidrBlock";
   String JSON_KEY_DESTINATION_IPV6_CIDR_BLOCK = "DestinationIpv6CidrBlock";
   String JSON_KEY_DESTINATION_PREFIX_LIST_ID = "DestinationPrefixListId";
+  String JSON_KEY_DIRECT_CONNECT_AMAZON_SIDE_ASN = "amazonSideAsn";
   String JSON_KEY_DIRECT_CONNECT_GATEWAY_ATTACHMENTS = "directConnectGatewayAttachments";
   String JSON_KEY_DIRECT_CONNECT_GATEWAY_ASSOCIATIONS = "directConnectGatewayAssociations";
   String JSON_KEY_DIRECT_CONNECT_GATEWAY_ID = "directConnectGatewayId";
